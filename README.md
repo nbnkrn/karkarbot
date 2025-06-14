@@ -1,118 +1,117 @@
-# KarkarBot - Multilingual Rejection Message API
+# KarkarBot API
 
-A RESTful API service that provides random rejection messages in multiple languages (English, Spanish, Italian, French, and Arabic).
+A multilingual rejection message API that provides creative and humorous ways to say "no" in multiple languages. The API is built with Node.js, Express, and MongoDB Atlas.
 
-## Setup
+## Features
 
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Create a `.env` file in the root directory with the following variables:
-   ```
-   PORT=3000
-   MONGODB_URI=your_mongodb_atlas_connection_string_here
-   ```
+- Multilingual rejection messages in English, French, Italian, Arabic, and Spanish
+- Random message selection
+- Language-specific filtering
+- RESTful API endpoints
+- MongoDB Atlas integration
 
-## Running the Application
+## Prerequisites
 
-Development mode:
+- Node.js (v14 or higher)
+- MongoDB Atlas account
+- npm or yarn package manager
+
+## Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
+git clone https://github.com/yourusername/karkarbot.git
+cd karkarbot
 ```
 
-Production mode:
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a `.env` file in the root directory with the following variables:
+```env
+PORT=3000
+MONGODB_URI=your_mongodb_connection_string
+MONGODB_DATABASE=your_database_name
+MONGODB_COLLECTION=your_collection_name
+```
+
+4. Start the server:
 ```bash
 npm start
 ```
 
-## Database Schema
-
-### RejectionMessage Collection
-
-```javascript
-{
-  message: {
-    type: String,
-    required: true
-  },
-  language: {
-    type: String,
-    required: true,
-    enum: ['english', 'spanish', 'italian', 'french', 'arabic']
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-}
-```
-
-#### Field Descriptions:
-- `message`: The rejection message text (required)
-- `language`: The language of the message (required, must be one of: english, spanish, italian, french, arabic)
-- `createdAt`: Timestamp of when the message was created (automatically set)
-
-#### Example Document:
-```javascript
-{
-  "_id": "684db06f7dbf514a53da0d2b",
-  "message": "Sorry, not interested.",
-  "language": "english",
-  "createdAt": "2024-06-14T17:25:04.000Z",
-  "__v": 0
-}
-```
-
 ## API Endpoints
 
-### Get Random Rejection Message
+### Get All Messages
+```http
+GET /api/rejections
 ```
+Returns all rejection messages in the database.
+
+### Get Random Message
+```http
 GET /api/rejections/random
 ```
-Optional query parameter:
-- `language`: Filter by language (english, spanish, italian, french, arabic)
+Returns a random rejection message.
 
-### Add New Rejection Message
+### Get Random Message by Language
+```http
+GET /api/rejections/random?language=english
 ```
+Returns a random rejection message in the specified language.
+
+### Add New Message
+```http
 POST /api/rejections
-```
-Body:
-```json
+Content-Type: application/json
+
 {
-  "message": "Your rejection message here",
-  "language": "english"
+  "en": "English message",
+  "fr": "French message",
+  "it": "Italian message",
+  "ar": "Arabic message",
+  "es": "Spanish message"
 }
 ```
 
-### Get All Rejection Messages
-```
-GET /api/rejections
-```
-Optional query parameter:
-- `language`: Filter by language (english, spanish, italian, french, arabic)
-
-## Health Check
-```
+### Health Check
+```http
 GET /health
 ```
+Returns the API health status and database connection information.
 
-## Example Usage
+## Data Structure
 
-1. Get a random rejection message:
-```bash
-curl http://localhost:3000/api/rejections/random
+Each rejection message in the database has the following structure:
+```json
+{
+  "_id": "message_id",
+  "en": "English message",
+  "fr": "French message",
+  "it": "Italian message",
+  "ar": "Arabic message",
+  "es": "Spanish message",
+  "createdAt": "timestamp"
+}
 ```
 
-2. Get a random rejection message in Spanish:
-```bash
-curl http://localhost:3000/api/rejections/random?language=spanish
-```
+## Environment Variables
 
-3. Add a new rejection message:
-```bash
-curl -X POST http://localhost:3000/api/rejections \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Sorry, not interested.", "language": "english"}'
-``` 
+- `PORT`: The port number for the server (default: 3000)
+- `MONGODB_URI`: MongoDB Atlas connection string
+- `MONGODB_DATABASE`: Name of the MongoDB database
+- `MONGODB_COLLECTION`: Name of the collection for rejection messages
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details. 

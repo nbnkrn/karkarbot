@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const RejectionMessage = require('../models/RejectionMessage');
+const mongoose = require('mongoose');
 
 // Get a random rejection message
 router.get('/random', async (req, res) => {
@@ -12,20 +13,17 @@ router.get('/random', async (req, res) => {
       query.language = language;
     }
 
-    // Get total count of messages
-    const count = await RejectionMessage.countDocuments(query);
-    
-    if (count === 0) {
-      return res.status(404).json({ 
-        error: 'No rejection messages found' + (language ? ` for language: ${language}` : '')
-      });
-    }
+    console.log('Query:', query);
+    console.log('Database:', mongoose.connection.db.databaseName);
+    console.log('Collection:', mongoose.connection.collections.rejectionmessages?.collectionName);
 
-    // Get random message using aggregation
+    // Use aggregation with $sample for efficient random selection
     const message = await RejectionMessage.aggregate([
       { $match: query },
       { $sample: { size: 1 } }
     ]);
+
+    console.log('Aggregation Result:', message);
 
     if (!message || message.length === 0) {
       return res.status(404).json({ 
@@ -35,6 +33,7 @@ router.get('/random', async (req, res) => {
 
     res.json(message[0]);
   } catch (error) {
+    console.error('Error:', error);
     res.status(500).json({ error: 'Error fetching rejection message' });
   }
 });

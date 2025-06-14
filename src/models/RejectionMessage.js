@@ -14,6 +14,9 @@ const rejectionMessageSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+}, { 
+  collection: process.env.MONGODB_COLLECTION || 'rejectionmessages',
+  dbName: process.env.MONGODB_DATABASE || 'default_database'
 });
 
 module.exports = mongoose.model('RejectionMessage', rejectionMessageSchema); 
