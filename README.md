@@ -27,6 +27,44 @@ Production mode:
 npm start
 ```
 
+## Database Schema
+
+### RejectionMessage Collection
+
+```javascript
+{
+  message: {
+    type: String,
+    required: true
+  },
+  language: {
+    type: String,
+    required: true,
+    enum: ['english', 'spanish', 'italian', 'french', 'arabic']
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+}
+```
+
+#### Field Descriptions:
+- `message`: The rejection message text (required)
+- `language`: The language of the message (required, must be one of: english, spanish, italian, french, arabic)
+- `createdAt`: Timestamp of when the message was created (automatically set)
+
+#### Example Document:
+```javascript
+{
+  "_id": "684db06f7dbf514a53da0d2b",
+  "message": "Sorry, not interested.",
+  "language": "english",
+  "createdAt": "2024-06-14T17:25:04.000Z",
+  "__v": 0
+}
+```
+
 ## API Endpoints
 
 ### Get Random Rejection Message
