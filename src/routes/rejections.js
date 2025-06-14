@@ -21,11 +21,19 @@ router.get('/random', async (req, res) => {
       });
     }
 
-    // Get random message
-    const random = Math.floor(Math.random() * count);
-    const message = await RejectionMessage.findOne(query).skip(random);
+    // Get random message using aggregation
+    const message = await RejectionMessage.aggregate([
+      { $match: query },
+      { $sample: { size: 1 } }
+    ]);
 
-    res.json(message);
+    if (!message || message.length === 0) {
+      return res.status(404).json({ 
+        error: 'No rejection messages found' + (language ? ` for language: ${language}` : '')
+      });
+    }
+
+    res.json(message[0]);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching rejection message' });
   }
